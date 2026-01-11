@@ -14,6 +14,7 @@
 
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
+import { toast } from "@/hooks/use-toast";
 
 /**
  * User role enum for access control
@@ -87,15 +88,27 @@ export async function registerUser(
 
     // Check if user was created
     if (!authData.user) {
+      toast({
+        title: "Login failed",
+        description: "Invalid credentials.",
+        variant: "destructive",
+      });
       return { data: null, error: "Failed to create user account" };
     }
 
+    toast({
+      title: "Welcome back!",
+      description: "You've been logged in successfully",
+    });
+
+    console.log(authData.user);
     // Step 2: Create the user profile
     // This stores additional user information in our profiles table
     const { error: profileError } = await supabase.from("profiles").insert({
       id: authData.user.id,
       email,
       name,
+      role,
     });
 
     // Handle profile creation errors
@@ -106,18 +119,18 @@ export async function registerUser(
       return { data: null, error: "Failed to create user profile" };
     }
 
-    // Step 3: Assign the user role
-    // This is stored in a separate table for security
-    const { error: roleError } = await supabase.from("user_roles").insert({
-      user_id: authData.user.id,
-      role,
-    });
+    // // Step 3: Assign the user role
+    // // This is stored in a separate table for security
+    // const { error: roleError } = await supabase.from("profiles").insert({
+    //   user_id: authData.user.id,
+    //   role,
+    // });
 
-    // Handle role assignment errors
-    if (roleError) {
-      console.error("Role assignment error:", roleError);
-      return { data: null, error: "Failed to assign user role" };
-    }
+    // // Handle role assignment errors
+    // if (roleError) {
+    //   console.error("Role assignment error:", roleError);
+    //   return { data: null, error: "Failed to assign user role" };
+    // }
 
     // Return the complete user profile
     return {
@@ -226,9 +239,8 @@ export async function getUserProfile(
 
     // Fetch the user's role from the user_roles table
     const { data: roleData, error: roleError } = await supabase
-      .from("user_roles")
+      .from("profiles")
       .select("role")
-      .eq("user_id", userId)
       .maybeSingle();
 
     // Handle role fetch errors
