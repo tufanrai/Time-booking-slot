@@ -1,7 +1,7 @@
-import { format } from 'date-fns';
-import { useBookings } from '@/context/BookingContext';
-import { StatusBadge } from './StatusBadge';
-import { Button } from '@/components/ui/button';
+import { format } from "date-fns";
+import { useBookings } from "@/context/BookingContext";
+import { StatusBadge } from "./StatusBadge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,10 +9,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Check, X, Clock, Calendar, User } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
-import { BookingStatus } from '@/services/bookingService';
+} from "@/components/ui/table";
+import { Check, X, Clock, Calendar, User } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { BookingStatus } from "@/services/bookingService";
+import { useEffect, useState } from "react";
 
 interface AdminBookingTableProps {
   filter?: BookingStatus;
@@ -20,17 +21,21 @@ interface AdminBookingTableProps {
 
 export function AdminBookingTable({ filter }: AdminBookingTableProps) {
   const { bookings, updateBookingStatus } = useBookings();
+  const [filteredBookings, setFilteredBookings] = useState<any[]>([]);
 
-  const filteredBookings = filter 
-    ? bookings.filter(b => b.status === filter)
-    : bookings;
+  useEffect(() => {
+    setFilteredBookings(
+      filter ? bookings.filter((b) => b.status === filter) : bookings
+    );
+  }, []);
 
   const sortedBookings = [...filteredBookings].sort(
-    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    (a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );
 
   const handleApprove = (id: string) => {
-    updateBookingStatus(id, 'approved');
+    updateBookingStatus(id, "approved");
     toast({
       title: "Booking Approved",
       description: "The booking has been approved successfully",
@@ -38,7 +43,7 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
   };
 
   const handleReject = (id: string) => {
-    updateBookingStatus(id, 'rejected');
+    updateBookingStatus(id, "rejected");
     toast({
       title: "Booking Rejected",
       description: "The booking has been rejected",
@@ -51,12 +56,12 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
       <div className="bg-card rounded-xl border border-border p-8 text-center shadow-card">
         <Clock className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
         <h3 className="font-display text-lg text-foreground mb-1">
-          {filter === 'pending' ? 'No Pending Requests' : 'No Bookings Found'}
+          {filter === "pending" ? "No Pending Requests" : "No Bookings Found"}
         </h3>
         <p className="text-sm text-muted-foreground">
-          {filter === 'pending' 
-            ? 'All booking requests have been processed' 
-            : 'Bookings will appear here when users make requests'}
+          {filter === "pending"
+            ? "All booking requests have been processed"
+            : "Bookings will appear here when users make requests"}
         </p>
       </div>
     );
@@ -71,13 +76,15 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
             <TableHead className="text-muted-foreground">Date & Time</TableHead>
             <TableHead className="text-muted-foreground">Reason</TableHead>
             <TableHead className="text-muted-foreground">Status</TableHead>
-            <TableHead className="text-muted-foreground text-right">Actions</TableHead>
+            <TableHead className="text-muted-foreground text-right">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {sortedBookings.map((booking, index) => (
-            <TableRow 
-              key={booking.id} 
+            <TableRow
+              key={booking.id}
               className="border-border animate-fade-in"
               style={{ animationDelay: `${index * 30}ms` }}
             >
@@ -93,20 +100,23 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
                 <div className="space-y-1">
                   <div className="flex items-center gap-1.5 text-sm">
                     <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
-                    {format(new Date(booking.start_time), 'MMM d, yyyy')}
+                    {format(new Date(booking.start_time), "MMM d, yyyy")}
                   </div>
                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                     <Clock className="w-3.5 h-3.5" />
-                    {format(new Date(booking.start_time), 'HH:mm')} - {format(new Date(booking.end_time), 'HH:mm')}
+                    {format(new Date(booking.start_time), "HH:mm")} -{" "}
+                    {format(new Date(booking.end_time), "HH:mm")}
                   </div>
                 </div>
               </TableCell>
-              <TableCell className="max-w-[200px] truncate">{booking.reason}</TableCell>
+              <TableCell className="max-w-[200px] truncate">
+                {booking.reason}
+              </TableCell>
               <TableCell>
                 <StatusBadge status={booking.status} />
               </TableCell>
               <TableCell className="text-right">
-                {booking.status === 'pending' ? (
+                {booking.status === "pending" ? (
                   <div className="flex items-center justify-end gap-2">
                     <Button
                       size="sm"
@@ -128,7 +138,9 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
                     </Button>
                   </div>
                 ) : (
-                  <span className="text-sm text-muted-foreground">Processed</span>
+                  <span className="text-sm text-muted-foreground">
+                    Processed
+                  </span>
                 )}
               </TableCell>
             </TableRow>

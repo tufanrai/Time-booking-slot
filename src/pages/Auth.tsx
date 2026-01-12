@@ -186,11 +186,6 @@ export default function Auth() {
                   required
                 />
               </div>
-              {isLogin && (
-                <p className="text-xs text-muted-foreground">
-                  Use "demo" as password for testing
-                </p>
-              )}
             </div>
 
             <Button
