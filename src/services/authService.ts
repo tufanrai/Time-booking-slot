@@ -222,7 +222,7 @@ export async function getUserProfile(
     // Fetch the user's profile from the profiles table
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id, email, name")
+      .select("*")
       .eq("id", userId)
       .maybeSingle();
 
@@ -237,20 +237,20 @@ export async function getUserProfile(
       return { data: null, error: "User profile not found" };
     }
 
-    // Fetch the user's role from the user_roles table
-    const { data: roleData, error: roleError } = await supabase
-      .from("profiles")
-      .select("role")
-      .maybeSingle();
+    // // Fetch the user's role from the user_roles table
+    // const { data: roleData, error: roleError } = await supabase
+    //   .from("profiles")
+    //   .select("role")
+    //   .maybeSingle();
 
-    // Handle role fetch errors
-    if (roleError) {
-      console.error("Role fetch error:", roleError);
-      return { data: null, error: "Failed to fetch user role" };
-    }
+    // // Handle role fetch errors
+    // if (roleError) {
+    //   console.error("Role fetch error:", roleError);
+    //   return { data: null, error: "Failed to fetch user role" };
+    // }
 
     // Default to 'user' role if no role is assigned
-    const role: UserRole = (roleData?.role as UserRole) || "user";
+    const role: UserRole = (profile?.role as UserRole) || "user";
 
     // Return the complete user profile
     return {
