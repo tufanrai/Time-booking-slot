@@ -21,7 +21,7 @@ import { supabase } from "@/lib/supabase";
  * - approved: Booking confirmed by admin
  * - rejected: Booking denied by admin
  */
-export type BookingStatus = "pending" | "approved" | "rejected";
+export type BookingStatus = "pending" | "approved" | "rejected" | "today";
 
 /**
  * Booking record from the database

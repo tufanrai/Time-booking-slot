@@ -25,7 +25,24 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
 
   useEffect(() => {
     setFilteredBookings(
-      filter ? bookings.filter((b) => b.status === filter) : bookings
+      filter
+        ? bookings.filter((b) => {
+            if (filter === "today") {
+              const today = format(new Date(), "MMM d, yyyy");
+              const scheduledDate = format(
+                new Date(b.start_time),
+                "MMM d, yyyy"
+              );
+
+              if (today == scheduledDate) {
+                return b;
+              }
+              return;
+            }
+
+            return b.status === filter;
+          })
+        : bookings
     );
   }, []);
 
@@ -51,6 +68,7 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
     });
   };
 
+  // Not found message
   if (sortedBookings.length === 0) {
     return (
       <div className="bg-card rounded-xl border border-border p-8 text-center shadow-card">
