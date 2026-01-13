@@ -15,7 +15,7 @@
     --popover: 226 30% 10%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 239 84% 67%;
+    --primary: 103 42% 53%;
     --primary-foreground: 210 40% 98%;
 
     --secondary: 226 25% 15%;
@@ -24,8 +24,11 @@
     --muted: 226 25% 18%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 239 84% 67%;
+    --accent: 103 42% 53%;
     --accent-foreground: 210 40% 98%;
+
+    --auth-button: 106 70% 56%;
+    --auth-button-foreground: 210 40% 98%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
@@ -38,24 +41,24 @@
 
     --border: 226 25% 18%;
     --input: 226 25% 18%;
-    --ring: 239 84% 67%;
+    --ring: 103 42% 53%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 226 30% 8%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 239 84% 67%;
+    --sidebar-primary: 103 42% 53%;
     --sidebar-primary-foreground: 210 40% 98%;
     --sidebar-accent: 226 25% 15%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 226 25% 18%;
-    --sidebar-ring: 239 84% 67%;
+    --sidebar-ring: 103 42% 53%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(239 84% 67%) 0%, hsl(280 70% 60%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(103 42% 53%) 0%, hsl(106 70% 56%) 100%);
     --gradient-card: linear-gradient(135deg, hsl(226 30% 12%) 0%, hsl(226 30% 8%) 100%);
-    --gradient-glow: radial-gradient(ellipse at center, hsl(239 84% 67% / 0.15) 0%, transparent 70%);
+    --gradient-glow: radial-gradient(ellipse at center, hsl(103 42% 53% / 0.15) 0%, transparent 70%);
 
-    --shadow-glow: 0 0 40px -10px hsl(239 84% 67% / 0.4);
+    --shadow-glow: 0 0 40px -10px hsl(103 42% 53% / 0.4);
     --shadow-card: 0 4px 24px -4px hsl(0 0% 0% / 0.4);
   }
 }
@@ -125,8 +128,8 @@
   }
 
   @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 20px -5px hsl(239 84% 67% / 0.4); }
-    50% { box-shadow: 0 0 30px -5px hsl(239 84% 67% / 0.6); }
+    0%, 100% { box-shadow: 0 0 20px -5px hsl(103 42% 53% / 0.4); }
+    50% { box-shadow: 0 0 30px -5px hsl(103 42% 53% / 0.6); }
   }
 
   .animate-pulse-glow {

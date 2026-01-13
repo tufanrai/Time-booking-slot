@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserRole } from "@/types/booking";
 import { toast } from "@/hooks/use-toast";
-import { Music, Mail, Lock, User, Shield, Mic } from "lucide-react";
+import { Music, Mail, Lock, User, Mic } from "lucide-react";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/digital_gurkha.jpeg";
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export default function Auth() {
         if (success) {
           toast({
             title: "Account created!",
-            description: "Welcome to StudioBooker",
+            description: "Welcome to DG StudioBooker",
           });
         }
       }
@@ -70,11 +71,17 @@ export default function Auth() {
 
         <div className="relative z-10 max-w-md mx-auto lg:mx-0">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-glow animate-pulse-glow">
-              <Music className="w-6 h-6 text-primary-foreground" />
-            </div>
+            <div
+              style={{
+                backgroundImage: `url('${logo}')`,
+                backgroundPosition: "center",
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+              }}
+              className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center shadow-glow animate-pulse-glow"
+            ></div>
             <span className="font-display text-2xl font-bold">
-              Studio<span className="text-gradient">Booker</span>
+              DG Studio<span className="text-gradient">Booker</span>
             </span>
           </div>
 
@@ -97,8 +104,8 @@ export default function Auth() {
                 key={label}
                 className="flex items-center gap-2 text-muted-foreground"
               >
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Icon className="w-4 h-4 text-primary" />
+                <div className="w-8 h-8 rounded-lg bg-[#d1e8c6]/10 flex items-center justify-center">
+                  <Icon className="w-4 h-4 text-[#7dc361]" />
                 </div>
                 <span className="text-sm">{label}</span>
               </div>
@@ -108,7 +115,7 @@ export default function Auth() {
       </div>
 
       {/* Right Panel - Auth Form */}
-      <div className="lg:w-1/2 p-8 lg:p-12 flex items-center justify-center bg-background">
+      <div className="lg:w-1/2 p-8 lg:p-12 flex items-center justify-center bg-black">
         <div className="w-full max-w-md animate-slide-up">
           {/* Toggle */}
           <div className="flex bg-secondary rounded-lg p-1 mb-8">
@@ -118,7 +125,7 @@ export default function Auth() {
               className={cn(
                 "flex-1 py-2.5 text-sm font-medium rounded-md transition-all",
                 isLogin
-                  ? "bg-card text-foreground shadow-sm"
+                  ? "bg-black text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -130,7 +137,7 @@ export default function Auth() {
               className={cn(
                 "flex-1 py-2.5 text-sm font-medium rounded-md transition-all",
                 !isLogin
-                  ? "bg-card text-foreground shadow-sm"
+                  ? "bg-black text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -149,7 +156,7 @@ export default function Auth() {
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="pl-10 bg-secondary border-border"
+                    className="pl-10 bg-[#182115] border-border"
                     required={!isLogin}
                   />
                 </div>
@@ -190,7 +197,11 @@ export default function Auth() {
 
             <Button
               type="submit"
-              className="w-full bg-gradient-primary hover:opacity-90 transition-opacity h-11"
+              className="w-full hover:opacity-90 transition-opacity h-11"
+              style={{
+                backgroundColor: "hsl(106 70% 56%)",
+                color: "hsl(210 40% 98%)",
+              }}
               disabled={isLoading}
             >
               {isLoading
