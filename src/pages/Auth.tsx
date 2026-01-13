@@ -156,7 +156,7 @@ export default function Auth() {
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="pl-10 bg-[#182115] border-border"
+                    className="pl-10 bg-secondary border-border"
                     required={!isLogin}
                   />
                 </div>

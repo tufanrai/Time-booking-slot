@@ -22,6 +22,7 @@ import { supabase } from "@/lib/supabase";
  * - rejected: Booking denied by admin
  */
 export type BookingStatus = "pending" | "approved" | "rejected" | "today";
+export type BookingRemarks = "";
 
 /**
  * Booking record from the database
@@ -56,6 +57,7 @@ export interface BookingUpdate {
   end_time?: string;
   reason?: string;
   status?: BookingStatus;
+  admin_notes?: string;
 }
 
 /**

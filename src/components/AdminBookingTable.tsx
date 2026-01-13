@@ -51,6 +51,7 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
       new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   );
 
+  // Approval handling function
   const handleApprove = (id: string) => {
     updateBookingStatus(id, "approved");
     toast({
@@ -59,6 +60,7 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
     });
   };
 
+  // Rejection handling function
   const handleReject = (id: string) => {
     updateBookingStatus(id, "rejected");
     toast({

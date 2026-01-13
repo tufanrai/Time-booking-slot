@@ -1,20 +1,20 @@
-import { useState, useEffect } from 'react';
-import { format } from 'date-fns';
+import { useState, useEffect } from "react";
+import { format } from "date-fns";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { useBookings, Booking } from '@/context/BookingContext';
-import { timeSlots } from '@/data/mockData';
-import { cn } from '@/lib/utils';
-import { Clock, Calendar, Edit } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useBookings, Booking } from "@/context/BookingContext";
+import { timeSlots } from "@/data/mockData";
+import { cn } from "@/lib/utils";
+import { Clock, Calendar, Edit } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface EditBookingModalProps {
   open: boolean;
@@ -22,19 +22,23 @@ interface EditBookingModalProps {
   booking: Booking | null;
 }
 
-export function EditBookingModal({ open, onOpenChange, booking }: EditBookingModalProps) {
+export function EditBookingModal({
+  open,
+  onOpenChange,
+  booking,
+}: EditBookingModalProps) {
   const { updateBooking, getTakenSlots } = useBookings();
-  const [startTime, setStartTime] = useState<string>('');
-  const [endTime, setEndTime] = useState<string>('');
-  const [reason, setReason] = useState('');
+  const [startTime, setStartTime] = useState<string>("");
+  const [endTime, setEndTime] = useState<string>("");
+  const [reason, setReason] = useState("");
   const [takenSlots, setTakenSlots] = useState<string[]>([]);
 
   useEffect(() => {
     if (booking) {
       const start = new Date(booking.start_time);
       const end = new Date(booking.end_time);
-      setStartTime(format(start, 'HH:mm'));
-      setEndTime(format(end, 'HH:mm'));
+      setStartTime(format(start, "HH:mm"));
+      setEndTime(format(end, "HH:mm"));
       setReason(booking.reason);
     }
   }, [booking]);
@@ -45,9 +49,11 @@ export function EditBookingModal({ open, onOpenChange, booking }: EditBookingMod
       const selectedDate = new Date(booking.start_time);
       getTakenSlots(selectedDate).then((slots) => {
         // Exclude current booking's slots from taken list
-        const bookingStart = format(new Date(booking.start_time), 'HH:mm');
-        const bookingEnd = format(new Date(booking.end_time), 'HH:mm');
-        const filteredSlots = slots.filter(slot => slot < bookingStart || slot >= bookingEnd);
+        const bookingStart = format(new Date(booking.start_time), "HH:mm");
+        const bookingEnd = format(new Date(booking.end_time), "HH:mm");
+        const filteredSlots = slots.filter(
+          (slot) => slot < bookingStart || slot >= bookingEnd
+        );
         setTakenSlots(filteredSlots);
       });
     }
@@ -59,7 +65,7 @@ export function EditBookingModal({ open, onOpenChange, booking }: EditBookingMod
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!startTime || !endTime || !reason.trim()) {
       toast({
         title: "Missing Information",
@@ -70,11 +76,11 @@ export function EditBookingModal({ open, onOpenChange, booking }: EditBookingMod
     }
 
     const startDateTime = new Date(selectedDate);
-    const [startHour, startMin] = startTime.split(':').map(Number);
+    const [startHour, startMin] = startTime.split(":").map(Number);
     startDateTime.setHours(startHour, startMin, 0, 0);
 
     const endDateTime = new Date(selectedDate);
-    const [endHour, endMin] = endTime.split(':').map(Number);
+    const [endHour, endMin] = endTime.split(":").map(Number);
     endDateTime.setHours(endHour, endMin, 0, 0);
 
     if (endDateTime <= startDateTime) {
@@ -119,7 +125,7 @@ export function EditBookingModal({ open, onOpenChange, booking }: EditBookingMod
           </DialogTitle>
           <DialogDescription className="flex items-center gap-2 text-muted-foreground">
             <Calendar className="w-4 h-4" />
-            {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+            {format(selectedDate, "EEEE, MMMM d, yyyy")}
           </DialogDescription>
         </DialogHeader>
 
@@ -137,20 +143,27 @@ export function EditBookingModal({ open, onOpenChange, booking }: EditBookingMod
                     onClick={() => {
                       if (!startTime || (startTime && endTime)) {
                         setStartTime(slot);
-                        setEndTime('');
+                        setEndTime("");
                       } else if (slot > startTime) {
                         setEndTime(slot);
                       } else {
                         setStartTime(slot);
-                        setEndTime('');
+                        setEndTime("");
                       }
                     }}
                     className={cn(
                       "py-2 px-1 text-xs rounded-md border transition-all font-medium",
-                      taken && "bg-muted/50 text-muted-foreground border-border cursor-not-allowed opacity-50",
-                      !taken && slot === startTime && "bg-primary text-primary-foreground border-primary shadow-glow",
-                      !taken && slot === endTime && "bg-success/20 text-success border-success",
-                      !taken && slot !== startTime && slot !== endTime && 
+                      taken &&
+                        "bg-muted/50 text-muted-foreground border-border cursor-not-allowed opacity-50",
+                      !taken &&
+                        slot === startTime &&
+                        "bg-primary text-primary-foreground border-primary shadow-glow",
+                      !taken &&
+                        slot === endTime &&
+                        "bg-success/20 text-success border-success",
+                      !taken &&
+                        slot !== startTime &&
+                        slot !== endTime &&
                         "bg-secondary border-border hover:border-primary hover:bg-primary/10"
                     )}
                   >
