@@ -14,6 +14,7 @@ import { Check, X, Clock, Calendar, User } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { BookingStatus } from "@/services/bookingService";
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 interface AdminBookingTableProps {
   filter?: BookingStatus;
@@ -22,6 +23,7 @@ interface AdminBookingTableProps {
 export function AdminBookingTable({ filter }: AdminBookingTableProps) {
   const { bookings, updateBookingStatus } = useBookings();
   const [filteredBookings, setFilteredBookings] = useState<any[]>([]);
+  const [liveBookingUpdates, setLiveBookingUpdates] = useState<any[]>([]);
 
   useEffect(() => {
     setFilteredBookings(
@@ -44,7 +46,35 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
           })
         : bookings
     );
+  }, [filter]);
+
+  console.log("filter", filteredBookings);
+  // Realtime data fetching.
+  useEffect(() => {
+    const channel = supabase
+      .channel("bookings")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT", // We only care about new ones
+          schema: "public",
+          table: "bookings",
+        },
+        (payload) => {
+          console.log("New booking received!", payload);
+          // Add the new booking to the top of your state list
+          setFilteredBookings((prev) => [payload.new, ...prev]);
+        }
+      )
+      .subscribe();
+
+    // Cleanup: Close the connection when the admin leaves the page
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
+
+  console.log("live booking:", liveBookingUpdates);
 
   const sortedBookings = [...filteredBookings].sort(
     (a, b) =>

@@ -1,24 +1,28 @@
-import { useState } from 'react';
-import { Calendar } from '@/components/ui/calendar';
-import { useBookings } from '@/context/BookingContext';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import { Calendar } from "@/components/ui/calendar";
+import { useBookings } from "@/context/BookingContext";
+import { cn } from "@/lib/utils";
 
 interface BookingCalendarProps {
   onDateSelect: (date: Date) => void;
   selectedDate?: Date;
 }
 
-export function BookingCalendar({ onDateSelect, selectedDate }: BookingCalendarProps) {
+export function BookingCalendar({
+  onDateSelect,
+  selectedDate,
+}: BookingCalendarProps) {
   const { bookings } = useBookings();
   const [month, setMonth] = useState<Date>(new Date());
 
   const datesWithBookings = bookings.reduce((acc, booking) => {
-    const dateStr = booking.start_time.split('T')[0];
+    const dateStr = booking.start_time.split("T")[0];
     if (!acc[dateStr]) {
       acc[dateStr] = { approved: 0, pending: 0 };
     }
-    if (booking.status === 'approved') acc[dateStr].approved++;
-    if (booking.status === 'pending') acc[dateStr].pending++;
+
+    if (booking.status === "approved") acc[dateStr].approved++;
+    if (booking.status === "pending") acc[dateStr].pending++;
     return acc;
   }, {} as Record<string, { approved: number; pending: number }>);
 
@@ -32,7 +36,8 @@ export function BookingCalendar({ onDateSelect, selectedDate }: BookingCalendarP
         onMonthChange={setMonth}
         className="pointer-events-auto"
         classNames={{
-          months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+          months:
+            "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
           month: "space-y-4",
           caption: "flex justify-center pt-1 relative items-center",
           caption_label: "text-sm font-medium text-foreground",
@@ -44,7 +49,8 @@ export function BookingCalendar({ onDateSelect, selectedDate }: BookingCalendarP
           nav_button_next: "absolute right-1",
           table: "w-full border-collapse space-y-1",
           head_row: "flex",
-          head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
+          head_cell:
+            "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
           row: "flex w-full mt-2",
           cell: "h-9 w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
           day: cn(
@@ -52,7 +58,8 @@ export function BookingCalendar({ onDateSelect, selectedDate }: BookingCalendarP
             "hover:bg-primary/20 hover:text-foreground",
             "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
           ),
-          day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground shadow-glow",
+          day_selected:
+            "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground shadow-glow",
           day_today: "bg-muted text-foreground font-semibold",
           day_outside: "text-muted-foreground opacity-50",
           day_disabled: "text-muted-foreground opacity-50",
@@ -60,7 +67,7 @@ export function BookingCalendar({ onDateSelect, selectedDate }: BookingCalendarP
         }}
         components={{
           DayContent: ({ date }) => {
-            const dateStr = date.toISOString().split('T')[0];
+            const dateStr = date.toISOString().split("T")[0];
             const counts = datesWithBookings[dateStr];
             return (
               <div className="relative w-full h-full flex items-center justify-center">
@@ -80,6 +87,7 @@ export function BookingCalendar({ onDateSelect, selectedDate }: BookingCalendarP
           },
         }}
       />
+      {/* Index */}
       <div className="mt-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-success" />

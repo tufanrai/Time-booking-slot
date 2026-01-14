@@ -1,21 +1,21 @@
-import { useState, useEffect } from 'react';
-import { format } from 'date-fns';
+import { useState, useEffect } from "react";
+import { format } from "date-fns";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { useBookings } from '@/context/BookingContext';
-import { useAuth } from '@/context/AuthContext';
-import { timeSlots } from '@/data/mockData';
-import { cn } from '@/lib/utils';
-import { Clock, Calendar, Mic } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useBookings } from "@/context/BookingContext";
+import { useAuth } from "@/context/AuthContext";
+import { timeSlots } from "@/data/mockData";
+import { cn } from "@/lib/utils";
+import { Clock, Calendar, Mic } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface BookingModalProps {
   open: boolean;
@@ -23,12 +23,16 @@ interface BookingModalProps {
   selectedDate: Date;
 }
 
-export function BookingModal({ open, onOpenChange, selectedDate }: BookingModalProps) {
+export function BookingModal({
+  open,
+  onOpenChange,
+  selectedDate,
+}: BookingModalProps) {
   const { user } = useAuth();
   const { addBooking, getTakenSlots } = useBookings();
-  const [startTime, setStartTime] = useState<string>('');
-  const [endTime, setEndTime] = useState<string>('');
-  const [reason, setReason] = useState('');
+  const [startTime, setStartTime] = useState<string>("");
+  const [endTime, setEndTime] = useState<string>("");
+  const [reason, setReason] = useState("");
   const [takenSlots, setTakenSlots] = useState<string[]>([]);
 
   // Fetch taken slots when date changes or modal opens
@@ -40,7 +44,7 @@ export function BookingModal({ open, onOpenChange, selectedDate }: BookingModalP
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!user || !startTime || !endTime || !reason.trim()) {
       toast({
         title: "Missing Information",
@@ -51,11 +55,11 @@ export function BookingModal({ open, onOpenChange, selectedDate }: BookingModalP
     }
 
     const startDateTime = new Date(selectedDate);
-    const [startHour, startMin] = startTime.split(':').map(Number);
+    const [startHour, startMin] = startTime.split(":").map(Number);
     startDateTime.setHours(startHour, startMin, 0, 0);
 
     const endDateTime = new Date(selectedDate);
-    const [endHour, endMin] = endTime.split(':').map(Number);
+    const [endHour, endMin] = endTime.split(":").map(Number);
     endDateTime.setHours(endHour, endMin, 0, 0);
 
     if (endDateTime <= startDateTime) {
@@ -81,9 +85,9 @@ export function BookingModal({ open, onOpenChange, selectedDate }: BookingModalP
         description: "Your booking request is pending approval",
       });
 
-      setStartTime('');
-      setEndTime('');
-      setReason('');
+      setStartTime("");
+      setEndTime("");
+      setReason("");
       onOpenChange(false);
     } else {
       toast({
@@ -106,16 +110,18 @@ export function BookingModal({ open, onOpenChange, selectedDate }: BookingModalP
           </DialogTitle>
           <DialogDescription className="flex items-center gap-2 text-muted-foreground">
             <Calendar className="w-4 h-4" />
-            {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+            {format(selectedDate, "EEEE, MMMM d, yyyy")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-5 mt-4">
+          {/* Time slot */}
           <div className="space-y-3">
             <Label className="text-sm font-medium">Select Time Slot</Label>
             <div className="grid grid-cols-5 gap-2">
               {timeSlots.map((slot) => {
                 const taken = isSlotTaken(slot);
+                console.log("slot:", slot, "taken", taken);
                 return (
                   <button
                     key={slot}
@@ -124,20 +130,27 @@ export function BookingModal({ open, onOpenChange, selectedDate }: BookingModalP
                     onClick={() => {
                       if (!startTime || (startTime && endTime)) {
                         setStartTime(slot);
-                        setEndTime('');
+                        setEndTime("");
                       } else if (slot > startTime) {
                         setEndTime(slot);
                       } else {
                         setStartTime(slot);
-                        setEndTime('');
+                        setEndTime("");
                       }
                     }}
                     className={cn(
                       "py-2 px-1 text-xs rounded-md border transition-all font-medium",
-                      taken && "bg-muted/50 text-muted-foreground border-border cursor-not-allowed opacity-50",
-                      !taken && slot === startTime && "bg-primary text-primary-foreground border-primary shadow-glow",
-                      !taken && slot === endTime && "bg-success/20 text-success border-success",
-                      !taken && slot !== startTime && slot !== endTime && 
+                      taken &&
+                        "bg-muted/50 text-muted-foreground border-border cursor-not-allowed opacity-50",
+                      !taken &&
+                        slot === startTime &&
+                        "bg-primary text-primary-foreground border-primary shadow-glow",
+                      !taken &&
+                        slot === endTime &&
+                        "bg-success/20 text-success border-success",
+                      !taken &&
+                        slot !== startTime &&
+                        slot !== endTime &&
                         "bg-secondary border-border hover:border-primary hover:bg-primary/10"
                     )}
                   >
@@ -155,6 +168,7 @@ export function BookingModal({ open, onOpenChange, selectedDate }: BookingModalP
             )}
           </div>
 
+          {/* Reason textarea */}
           <div className="space-y-2">
             <Label htmlFor="reason">Reason for Booking</Label>
             <Textarea
@@ -166,6 +180,7 @@ export function BookingModal({ open, onOpenChange, selectedDate }: BookingModalP
             />
           </div>
 
+          {/* Submition button */}
           <div className="flex gap-3 pt-2">
             <Button
               type="button"

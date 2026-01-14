@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Music, ArrowRight, Calendar, Shield, Zap } from "lucide-react";
+import { ArrowRight, Calendar, Shield, Zap } from "lucide-react";
 import logo from "@/assets/digital_gurkha.jpeg";
 
 export default function Index() {
@@ -59,7 +59,7 @@ export default function Index() {
                 className="w-14 h-14 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-glow animate-pulse-glow"
               ></div>
               <span className="font-display text-3xl font-bold">
-                DG Studio<span className="text-gradient">Booker</span>
+                DG Services<span className="text-gradient">Booker</span>
               </span>
             </div>
 

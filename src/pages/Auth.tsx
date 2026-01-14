@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserRole } from "@/types/booking";
 import { toast } from "@/hooks/use-toast";
-import { Music, Mail, Lock, User, Mic } from "lucide-react";
+import { Music, Mail, Lock, User, Mic, Eye, EyeClosed } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/digital_gurkha.jpeg";
 
 export default function Auth() {
   const navigate = useNavigate();
   const { login, register, isAuthenticated, user } = useAuth();
-
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +32,7 @@ export default function Auth() {
 
     try {
       if (isLogin) {
-        const success = login(email, password);
+        const success = await login(email, password);
         if (success) {
           toast({
             title: "Welcome back!",
@@ -42,16 +42,16 @@ export default function Auth() {
           toast({
             title: "Login failed",
             description:
-              "Invalid credentials. Try 'demo' as password for testing.",
+              "Invalid credentials. please check your email or password is incorrect.",
             variant: "destructive",
           });
         }
       } else {
-        const success = register(email, password, name, role);
+        const success = await register(email, password, name, role);
         if (success) {
           toast({
-            title: "Account created!",
-            description: "Welcome to DG StudioBooker",
+            title: "Verify email!",
+            description: "Please check your mail and verify before loging in.",
           });
         }
       }
@@ -183,15 +183,39 @@ export default function Auth() {
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 bg-secondary border-border"
-                  required
-                />
+                {showPassword ? (
+                  <>
+                    <Input
+                      id="password"
+                      type="text"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-10 bg-secondary border-border"
+                      required
+                    />
+                    <Eye
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 w-8 p-2 h-full text-muted-foreground cursor-pointer z-10"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-10 bg-secondary border-border"
+                      required
+                    />
+                    <EyeClosed
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 w-8 p-2 h-full text-muted-foreground cursor-pointer z-10"
+                    />
+                  </>
+                )}
               </div>
             </div>
 

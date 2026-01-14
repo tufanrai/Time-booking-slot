@@ -58,6 +58,7 @@ export default function Admin() {
       <Navbar />
 
       <main className="container mx-auto px-4 pt-24 pb-12">
+        {/* Welcome message */}
         <div className="mb-8 animate-fade-in">
           <h1 className="font-display text-3xl font-bold mb-2">
             Admin <span className="text-gradient">Panel</span>
@@ -100,6 +101,7 @@ export default function Admin() {
             </div>
 
             <Tabs defaultValue="pending" className="w-full">
+              {/* Filter */}
               <TabsList className="bg-secondary border border-border mb-4">
                 <TabsTrigger
                   value="today"
@@ -135,6 +137,7 @@ export default function Admin() {
                 </TabsTrigger>
               </TabsList>
 
+              {/* Bookeing list */}
               <TabsContent value="today">
                 <AdminBookingTable filter="today" />
               </TabsContent>

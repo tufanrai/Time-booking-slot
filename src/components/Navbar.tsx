@@ -31,7 +31,7 @@ export function Navbar() {
             className="w-9 h-9 rounded-lg bg-gradient-primary flex items-center justify-center shadow-glow group-hover:animate-pulse-glow transition-all"
           ></div>
           <span className="font-display text-xl font-bold">
-            DG Studio<span className="text-gradient">Booker</span>
+            DG Services<span className="text-gradient">Booker</span>
           </span>
         </div>
 

@@ -25,13 +25,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 export function BookingHistory() {
   const { user } = useAuth();
   const { getUserBookings, getApprovedBookings, deleteBooking } = useBookings();
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [deletingBooking, setDeletingBooking] = useState<Booking | null>(null);
-  const [userBookings, setUserBookings] = useState<Booking[]>([]);
+  const [userBookings, setUserBookings] = useState<any[]>([]);
   const [approvedBookings, setApprovedBookings] = useState<Booking[]>([]);
 
   if (!user) return null;
@@ -50,10 +51,34 @@ export function BookingHistory() {
           new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
       )
     );
+
+    // Realtime data fetching.
+    const channel = supabase
+      .channel("bookings")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT", // We only care about new ones
+          schema: "public",
+          table: "bookings",
+        },
+        (payload) => {
+          console.log("New booking received!", payload);
+          // Add the new booking to the top of your state list
+          setUserBookings((prev) => [payload.new, ...prev]);
+        }
+      )
+      .subscribe();
+
+    // Cleanup: Close the connection when the admin leaves the page
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const pendingBookings = userBookings.filter((b) => b.status === "pending");
 
+  console.log("This is user bookings", userBookings);
   const handleDelete = () => {
     if (deletingBooking) {
       deleteBooking(deletingBooking.id);

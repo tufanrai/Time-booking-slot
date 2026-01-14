@@ -15,6 +15,7 @@
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
 import { toast } from "@/hooks/use-toast";
+import Cookie from "js-cookie";
 
 /**
  * User role enum for access control
@@ -186,6 +187,7 @@ export async function loginUser(
       return { data: null, error: "Login failed - no user returned" };
     }
 
+    Cookie.set("secret", authData.session.access_token);
     // Step 2: Fetch the user's complete profile with role
     const userProfile = await getUserProfile(authData.user.id);
 
