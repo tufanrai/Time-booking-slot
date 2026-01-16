@@ -12,7 +12,11 @@ import {
 } from "@/components/ui/table";
 import { Check, X, Clock, Calendar, User } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import { BookingStatus } from "@/services/bookingService";
+import {
+  BookingStatus,
+  deleteBooking,
+  updateBooking,
+} from "@/services/bookingService";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -23,7 +27,6 @@ interface AdminBookingTableProps {
 export function AdminBookingTable({ filter }: AdminBookingTableProps) {
   const { bookings, updateBookingStatus } = useBookings();
   const [filteredBookings, setFilteredBookings] = useState<any[]>([]);
-  const [liveBookingUpdates, setLiveBookingUpdates] = useState<any[]>([]);
 
   useEffect(() => {
     setFilteredBookings(
@@ -46,9 +49,8 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
           })
         : bookings
     );
-  }, [filter]);
+  }, [updateBookingStatus, updateBooking, deleteBooking]);
 
-  console.log("filter", filteredBookings);
   // Realtime data fetching.
   useEffect(() => {
     const channel = supabase
@@ -61,9 +63,11 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
           table: "bookings",
         },
         (payload) => {
-          console.log("New booking received!", payload);
           // Add the new booking to the top of your state list
-          setFilteredBookings((prev) => [payload.new, ...prev]);
+          const oldArr = filteredBookings;
+          const newArr = payload.new;
+          const filteredArr = !newArr.filter((val) => !oldArr.includes(val));
+          setFilteredBookings((prev) => [filteredArr, ...prev]);
         }
       )
       .subscribe();
@@ -73,8 +77,6 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
       supabase.removeChannel(channel);
     };
   }, []);
-
-  console.log("live booking:", liveBookingUpdates);
 
   const sortedBookings = [...filteredBookings].sort(
     (a, b) =>

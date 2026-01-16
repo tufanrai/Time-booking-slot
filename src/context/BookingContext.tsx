@@ -65,15 +65,18 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     return unsubscribe;
   }, [refreshBookings]);
 
+  // Request new bookings.
   const addBooking = async (booking: NewBooking): Promise<boolean> => {
     const { error } = await createBookingService(booking);
     if (!error) {
       await refreshBookings();
       return true;
     }
+    refreshBookings();
     return false;
   };
 
+  // Update made before the approval.
   const updateBooking = async (
     id: string,
     updates: BookingUpdate
@@ -86,15 +89,18 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     return false;
   };
 
+  // Delete request by the user.
   const deleteBooking = async (id: string): Promise<boolean> => {
-    const { error } = await deleteBookingService(id);
-    if (!error) {
+    const resp = await deleteBookingService(id);
+    if (!resp.error) {
       await refreshBookings();
       return true;
     }
+    refreshBookings();
     return false;
   };
 
+  // Update made by the admins.
   const updateBookingStatus = async (
     id: string,
     status: BookingStatus
@@ -104,22 +110,27 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       await refreshBookings();
       return true;
     }
+    refreshBookings();
     return false;
   };
 
+  // Gets the booking date for the day.
   const getBookingsForDate = (date: Date): Booking[] => {
     const dateStr = date.toISOString().split("T")[0];
     return bookings.filter((b) => b.start_time.startsWith(dateStr));
   };
 
+  // Gets all the users bookings.
   const getUserBookings = (userId: string): Booking[] => {
     return bookings.filter((b) => b.user_id === userId);
   };
 
+  // Get all approved bookings.
   const getApprovedBookings = (): Booking[] => {
     return bookings.filter((b) => b.status === "approved");
   };
 
+  // deems the booked slots.
   const getTakenSlots = async (date: Date): Promise<string[]> => {
     const dateStr = date.toISOString().split("T")[0];
     const { data } = await getTakenSlotsService(dateStr);

@@ -57,7 +57,6 @@ export interface BookingUpdate {
   end_time?: string;
   reason?: string;
   status?: BookingStatus;
-  admin_notes?: string;
 }
 
 /**
@@ -259,8 +258,7 @@ export async function updateBooking(
       .from("bookings")
       .update(updates)
       .eq("id", id)
-      .select()
-      .single();
+      .select();
 
     // Handle update errors
     if (error) {
@@ -268,7 +266,7 @@ export async function updateBooking(
       return { data: null, error: "Failed to update booking" };
     }
 
-    return { data: data as Booking, error: null };
+    return { data: data as any, error: null };
   } catch (error) {
     console.error("Unexpected update error:", error);
     return { data: null, error: "An unexpected error occurred" };

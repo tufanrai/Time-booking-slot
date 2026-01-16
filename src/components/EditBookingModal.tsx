@@ -92,11 +92,7 @@ export function EditBookingModal({
       return;
     }
 
-    const success = await updateBooking(booking.id, {
-      start_time: startDateTime.toISOString(),
-      end_time: endDateTime.toISOString(),
-      reason: reason.trim(),
-    });
+    const success = await updateBooking(booking.id, booking);
 
     if (success) {
       toast({

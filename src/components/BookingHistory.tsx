@@ -24,8 +24,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import { toast } from "@/hooks/use-toast";
+import { updateBooking, updateBookingStatus } from "@/services/bookingService";
 
 export function BookingHistory() {
   const { user } = useAuth();
@@ -34,10 +35,13 @@ export function BookingHistory() {
   const [deletingBooking, setDeletingBooking] = useState<Booking | null>(null);
   const [userBookings, setUserBookings] = useState<any[]>([]);
   const [approvedBookings, setApprovedBookings] = useState<Booking[]>([]);
+  const [pendingBookings, setPendingBookings] = useState<Booking[]>([]);
 
   if (!user) return null;
 
+  // Fetch booking data
   useEffect(() => {
+    // display users bookings
     setUserBookings(
       getUserBookings(user.id).sort(
         (a, b) =>
@@ -45,6 +49,7 @@ export function BookingHistory() {
       )
     );
 
+    // displayes all approved bookings
     setApprovedBookings(
       getApprovedBookings().sort(
         (a, b) =>
@@ -52,6 +57,18 @@ export function BookingHistory() {
       )
     );
 
+    // pendingBookings
+    if (typeof pendingBookings === null) {
+      toast({
+        title: "Not found",
+        description: "You do not have any pending lists to be displayed",
+      });
+    }
+    setPendingBookings(userBookings.filter((b) => b.status === "pending"));
+  }, [updateBookingStatus, updateBooking, deleteBooking, getUserBookings]);
+
+  // Fetch data at real time
+  useEffect(() => {
     // Realtime data fetching.
     const channel = supabase
       .channel("bookings")
@@ -63,9 +80,11 @@ export function BookingHistory() {
           table: "bookings",
         },
         (payload) => {
-          console.log("New booking received!", payload);
           // Add the new booking to the top of your state list
-          setUserBookings((prev) => [payload.new, ...prev]);
+          const newArr = payload.new;
+          const oldArr = userBookings;
+          const filteredArr = newArr.filter((val) => !oldArr.includes(val));
+          setUserBookings((prev) => [filteredArr, ...prev]);
         }
       )
       .subscribe();
@@ -76,9 +95,7 @@ export function BookingHistory() {
     };
   }, []);
 
-  const pendingBookings = userBookings.filter((b) => b.status === "pending");
-
-  console.log("This is user bookings", userBookings);
+  // Handles delet functions
   const handleDelete = () => {
     if (deletingBooking) {
       deleteBooking(deletingBooking.id);
@@ -98,9 +115,12 @@ export function BookingHistory() {
     showActions?: boolean;
   }) => (
     <div className="p-4 hover:bg-secondary/50 transition-colors animate-fade-in">
+      {/* Booking slot request details */}
       <div className="flex items-start justify-between mb-2">
         <div className="flex-1">
-          <h4 className="font-medium text-foreground">{booking.reason}</h4>
+          <h4 className="font-medium text-foreground overflow-y-auto overflow-x-hidden">
+            {booking.reason}
+          </h4>
           <p className="text-xs text-muted-foreground mt-0.5">
             by {booking.user_name}
           </p>
@@ -129,6 +149,7 @@ export function BookingHistory() {
           )}
         </div>
       </div>
+      {/* Booking slot request start and end times */}
       <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <Calendar className="w-3.5 h-3.5" />
@@ -174,6 +195,7 @@ export function BookingHistory() {
             </TabsList>
           </div>
 
+          {/* My booking list */}
           <TabsContent value="my-bookings" className="m-0">
             <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
               {userBookings.length === 0 ? (
@@ -189,6 +211,7 @@ export function BookingHistory() {
             </div>
           </TabsContent>
 
+          {/* My pending list */}
           <TabsContent value="pending" className="m-0">
             <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
               {pendingBookings.length === 0 ? (
@@ -201,6 +224,7 @@ export function BookingHistory() {
             </div>
           </TabsContent>
 
+          {/* All approved list */}
           <TabsContent value="approved" className="m-0">
             <div className="divide-y divide-border max-h-[400px] overflow-y-auto">
               {approvedBookings.length === 0 ? (
