@@ -52,7 +52,7 @@ export function EditBookingModal({
         const bookingStart = format(new Date(booking.start_time), "HH:mm");
         const bookingEnd = format(new Date(booking.end_time), "HH:mm");
         const filteredSlots = slots.filter(
-          (slot) => slot < bookingStart || slot >= bookingEnd
+          (slot) => slot < bookingStart || slot >= bookingEnd,
         );
         setTakenSlots(filteredSlots);
       });
@@ -92,7 +92,11 @@ export function EditBookingModal({
       return;
     }
 
-    const success = await updateBooking(booking.id, booking);
+    const success = await updateBooking(booking.id, {
+      start_time: startDateTime.toString(),
+      end_time: endDateTime.toString(),
+      reason: reason,
+    });
 
     if (success) {
       toast({
@@ -160,7 +164,7 @@ export function EditBookingModal({
                       !taken &&
                         slot !== startTime &&
                         slot !== endTime &&
-                        "bg-secondary border-border hover:border-primary hover:bg-primary/10"
+                        "bg-secondary border-border hover:border-primary hover:bg-primary/10",
                     )}
                   >
                     {slot}
@@ -182,7 +186,7 @@ export function EditBookingModal({
             <Textarea
               id="reason"
               placeholder="e.g., Band practice, Recording session, Podcast..."
-              value={reason}
+              defaultValue={reason}
               onChange={(e) => setReason(e.target.value)}
               className="bg-secondary border-border resize-none h-20"
             />

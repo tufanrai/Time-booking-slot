@@ -45,16 +45,16 @@ export function BookingHistory() {
     setUserBookings(
       getUserBookings(user.id).sort(
         (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      )
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      ),
     );
 
     // displayes all approved bookings
     setApprovedBookings(
       getApprovedBookings().sort(
         (a, b) =>
-          new Date(b.start_time).getTime() - new Date(a.start_time).getTime()
-      )
+          new Date(b.start_time).getTime() - new Date(a.start_time).getTime(),
+      ),
     );
 
     // pendingBookings
@@ -64,7 +64,9 @@ export function BookingHistory() {
         description: "You do not have any pending lists to be displayed",
       });
     }
-    setPendingBookings(userBookings.filter((b) => b.status === "pending"));
+    setPendingBookings(
+      getUserBookings(user.id).filter((b) => b.status === "pending"),
+    );
   }, [updateBookingStatus, updateBooking, deleteBooking, getUserBookings]);
 
   // Fetch data at real time
@@ -85,7 +87,7 @@ export function BookingHistory() {
           const oldArr = userBookings;
           const filteredArr = newArr.filter((val) => !oldArr.includes(val));
           setUserBookings((prev) => [filteredArr, ...prev]);
-        }
+        },
       )
       .subscribe();
 
@@ -93,7 +95,7 @@ export function BookingHistory() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [updateBookingStatus, updateBooking, deleteBooking, getUserBookings]);
 
   // Handles delet functions
   const handleDelete = () => {
@@ -106,6 +108,8 @@ export function BookingHistory() {
       setDeletingBooking(null);
     }
   };
+
+  // const
 
   const BookingCard = ({
     booking,

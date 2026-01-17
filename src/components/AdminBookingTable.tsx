@@ -36,7 +36,7 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
               const today = format(new Date(), "MMM d, yyyy");
               const scheduledDate = format(
                 new Date(b.start_time),
-                "MMM d, yyyy"
+                "MMM d, yyyy",
               );
 
               if (today == scheduledDate) {
@@ -47,7 +47,7 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
 
             return b.status === filter;
           })
-        : bookings
+        : bookings,
     );
   }, [updateBookingStatus, updateBooking, deleteBooking]);
 
@@ -68,7 +68,7 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
           const newArr = payload.new;
           const filteredArr = !newArr.filter((val) => !oldArr.includes(val));
           setFilteredBookings((prev) => [filteredArr, ...prev]);
-        }
+        },
       )
       .subscribe();
 
@@ -76,11 +76,11 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [updateBookingStatus, updateBooking, deleteBooking]);
 
   const sortedBookings = [...filteredBookings].sort(
     (a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
   );
 
   // Approval handling function
