@@ -39,7 +39,7 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
                 "MMM d, yyyy",
               );
 
-              if (today == scheduledDate) {
+              if (today == scheduledDate && b.status == "approved") {
                 return b;
               }
               return;
