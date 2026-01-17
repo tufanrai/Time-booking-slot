@@ -141,7 +141,7 @@ export function BookingModal({
                   const taken = isSlotTaken(slot);
                   return (
                     <button
-                      key={key}
+                      key={slot}
                       type="button"
                       disabled={taken}
                       onClick={() => {

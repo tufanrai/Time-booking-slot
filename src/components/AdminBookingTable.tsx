@@ -159,8 +159,6 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
                   </div>
                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                     <Clock className="w-3.5 h-3.5 hidden md:block" />
-                    {/* {format(new Date(booking.start_time), "HH:mm")} -{" "}
-                    {format(new Date(booking.end_time), "HH:mm")} */}
                     {`${
                       new Date(booking.start_time).getHours() > 12
                         ? `0${new Date(booking.start_time).getHours() - 12}`

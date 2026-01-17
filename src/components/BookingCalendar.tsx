@@ -15,16 +15,19 @@ export function BookingCalendar({
   const { bookings } = useBookings();
   const [month, setMonth] = useState<Date>(new Date());
 
-  const datesWithBookings = bookings.reduce((acc, booking) => {
-    const dateStr = booking.start_time.split("T")[0];
-    if (!acc[dateStr]) {
-      acc[dateStr] = { approved: 0, pending: 0 };
-    }
+  const datesWithBookings = bookings.reduce(
+    (acc, booking) => {
+      const dateStr = booking.start_time.split("T")[0];
+      if (!acc[dateStr]) {
+        acc[dateStr] = { approved: 0, pending: 0 };
+      }
 
-    if (booking.status === "approved") acc[dateStr].approved++;
-    if (booking.status === "pending") acc[dateStr].pending++;
-    return acc;
-  }, {} as Record<string, { approved: number; pending: number }>);
+      if (booking.status === "approved") acc[dateStr].approved++;
+      if (booking.status === "pending") acc[dateStr].pending++;
+      return acc;
+    },
+    {} as Record<string, { approved: number; pending: number }>,
+  );
 
   return (
     <div className="bg-card rounded-xl border border-border p-4 shadow-card">
@@ -43,7 +46,7 @@ export function BookingCalendar({
           caption_label: "text-sm font-medium text-foreground",
           nav: "space-x-1 flex items-center",
           nav_button: cn(
-            "h-7 w-7 bg-transparent p-0 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors"
+            "h-7 w-7 bg-transparent p-0 text-muted-foreground hover:text-foreground hover:bg-muted rounded-md transition-colors",
           ),
           nav_button_previous: "absolute left-1",
           nav_button_next: "absolute right-1",
@@ -56,7 +59,7 @@ export function BookingCalendar({
           day: cn(
             "h-9 w-9 p-0 font-normal rounded-md transition-all",
             "hover:bg-primary/20 hover:text-foreground",
-            "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+            "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background",
           ),
           day_selected:
             "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground shadow-glow",

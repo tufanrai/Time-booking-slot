@@ -79,7 +79,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   // Update made before the approval.
   const updateBooking = async (
     id: string,
-    updates: BookingUpdate
+    updates: BookingUpdate,
   ): Promise<boolean> => {
     const { error } = await updateBookingService(id, updates);
     if (!error) {
@@ -103,7 +103,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   // Update made by the admins.
   const updateBookingStatus = async (
     id: string,
-    status: BookingStatus
+    status: BookingStatus,
   ): Promise<boolean> => {
     const { error } = await updateBookingStatusService(id, status);
     if (!error) {
@@ -120,7 +120,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     return bookings.filter((b) => b.start_time.startsWith(dateStr));
   };
 
-  // Gets all the users bookings.
+  // Gets all the user's bookings.
   const getUserBookings = (userId: string): Booking[] => {
     return bookings.filter((b) => b.user_id === userId);
   };
@@ -129,6 +129,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   const getApprovedBookings = (): Booking[] => {
     return bookings.filter((b) => b.status === "approved");
   };
+  console.log(bookings);
 
   // deems the booked slots.
   const getTakenSlots = async (date: Date): Promise<string[]> => {
