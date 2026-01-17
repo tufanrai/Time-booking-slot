@@ -34,6 +34,7 @@ export function BookingModal({
   const [endTime, setEndTime] = useState<string>("");
   const [reason, setReason] = useState("");
   const [takenSlots, setTakenSlots] = useState<string[]>([]);
+  const [timeSlot, setTimeSlots] = useState<string[]>(timeSlots);
 
   // Fetch taken slots when date changes or modal opens
   useEffect(() => {
@@ -41,6 +42,22 @@ export function BookingModal({
       getTakenSlots(selectedDate).then(setTakenSlots);
     }
   }, [open, selectedDate, getTakenSlots]);
+
+  // display time on 12hrs format
+  useEffect(() => {
+    const smallerTimes = timeSlots.filter((time) => time <= "12:30");
+    const greaterTimes = timeSlots.filter((time) => time > "12:30");
+    const atomRefinedTIme = greaterTimes
+      .map((time) => {
+        return time.split(":");
+      })
+      .map((timeArr) => {
+        const hrs = (Number(timeArr[0]) - 12).toString();
+        const min = timeArr[1];
+        return `${hrs}:${min}`;
+      });
+    setTimeSlots([...smallerTimes, ...atomRefinedTIme]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -119,45 +136,45 @@ export function BookingModal({
           <div className="space-y-3">
             <Label className="text-sm font-medium">Select Time Slot</Label>
             <div className="grid grid-cols-5 gap-2">
-              {timeSlots.map((slot) => {
-                const taken = isSlotTaken(slot);
-                console.log("slot:", slot, "taken", taken);
-                return (
-                  <button
-                    key={slot}
-                    type="button"
-                    disabled={taken}
-                    onClick={() => {
-                      if (!startTime || (startTime && endTime)) {
-                        setStartTime(slot);
-                        setEndTime("");
-                      } else if (slot > startTime) {
-                        setEndTime(slot);
-                      } else {
-                        setStartTime(slot);
-                        setEndTime("");
-                      }
-                    }}
-                    className={cn(
-                      "py-2 px-1 text-xs rounded-md border transition-all font-medium",
-                      taken &&
-                        "bg-muted/50 text-muted-foreground border-border cursor-not-allowed opacity-50",
-                      !taken &&
-                        slot === startTime &&
-                        "bg-primary text-primary-foreground border-primary shadow-glow",
-                      !taken &&
-                        slot === endTime &&
-                        "bg-success/20 text-success border-success",
-                      !taken &&
-                        slot !== startTime &&
-                        slot !== endTime &&
-                        "bg-secondary border-border hover:border-primary hover:bg-primary/10"
-                    )}
-                  >
-                    {slot}
-                  </button>
-                );
-              })}
+              {timeSlot &&
+                timeSlots.map((slot, key) => {
+                  const taken = isSlotTaken(slot);
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      disabled={taken}
+                      onClick={() => {
+                        if (!startTime || (startTime && endTime)) {
+                          setStartTime(slot);
+                          setEndTime("");
+                        } else if (slot > startTime) {
+                          setEndTime(slot);
+                        } else {
+                          setStartTime(slot);
+                          setEndTime("");
+                        }
+                      }}
+                      className={cn(
+                        "py-2 px-1 text-xs rounded-md border transition-all font-medium",
+                        taken &&
+                          "bg-muted/50 text-muted-foreground border-border cursor-not-allowed opacity-50",
+                        !taken &&
+                          slot === startTime &&
+                          "bg-primary text-primary-foreground border-primary shadow-glow",
+                        !taken &&
+                          slot === endTime &&
+                          "bg-success/20 text-success border-success",
+                        !taken &&
+                          slot !== startTime &&
+                          slot !== endTime &&
+                          "bg-secondary border-border hover:border-primary hover:bg-primary/10",
+                      )}
+                    >
+                      {timeSlot[key]}
+                    </button>
+                  );
+                })}
             </div>
             {startTime && (
               <p className="text-xs text-muted-foreground flex items-center gap-1">

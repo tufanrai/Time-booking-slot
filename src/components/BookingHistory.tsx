@@ -125,7 +125,7 @@ export function BookingHistory() {
           <h4 className="font-medium text-foreground overflow-y-auto overflow-x-hidden">
             {booking.reason}
           </h4>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5 overflow-x-auto overflow-y-hidden">
             by {booking.user_name}
           </p>
         </div>

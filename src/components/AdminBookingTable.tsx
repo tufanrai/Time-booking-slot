@@ -140,40 +140,65 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
               className="border-border animate-fade-in"
               style={{ animationDelay: `${index * 30}ms` }}
             >
+              {/* Profile */}
               <TableCell>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
                     <User className="w-4 h-4 text-primary" />
                   </div>
                   <span className="font-medium">{booking.user_name}</span>
                 </div>
               </TableCell>
+
+              {/* Dates */}
               <TableCell>
                 <div className="space-y-1">
                   <div className="flex items-center gap-1.5 text-sm">
-                    <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                    <Calendar className="w-3.5 h-3.5 text-muted-foreground hidden md:block" />
                     {format(new Date(booking.start_time), "MMM d, yyyy")}
                   </div>
                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <Clock className="w-3.5 h-3.5" />
-                    {format(new Date(booking.start_time), "HH:mm")} -{" "}
-                    {format(new Date(booking.end_time), "HH:mm")}
+                    <Clock className="w-3.5 h-3.5 hidden md:block" />
+                    {/* {format(new Date(booking.start_time), "HH:mm")} -{" "}
+                    {format(new Date(booking.end_time), "HH:mm")} */}
+                    {`${
+                      new Date(booking.start_time).getHours() > 12
+                        ? `0${new Date(booking.start_time).getHours() - 12}`
+                        : `${new Date(booking.start_time).getHours()}`
+                    }:${
+                      new Date(booking.start_time).getMinutes() < 30
+                        ? `00`
+                        : `${new Date(booking.start_time).getMinutes()}`
+                    }`}{" "}
+                    -{" "}
+                    {`${
+                      new Date(booking.end_time).getHours() > 12
+                        ? `0${new Date(booking.end_time).getHours() - 12}`
+                        : `${new Date(booking.end_time).getHours()}`
+                    }:${
+                      new Date(booking.end_time).getMinutes() < 30
+                        ? `00`
+                        : `${new Date(booking.end_time).getMinutes()}`
+                    }`}
                   </div>
                 </div>
               </TableCell>
-              <TableCell className="max-w-[200px] truncate">
+              {/* Reason */}
+              <TableCell className="max-w-[200px] truncate overflow-x-auto overflow-y-hidden">
                 {booking.reason}
               </TableCell>
+              {/* status */}
               <TableCell>
                 <StatusBadge status={booking.status} />
               </TableCell>
+              {/* action buttons */}
               <TableCell className="text-right">
                 {booking.status === "pending" ? (
-                  <div className="flex items-center justify-end gap-2">
+                  <div className="flex flex-col items-center justify-center gap-2">
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-8 px-3 border-success text-success hover:bg-success hover:text-success-foreground"
+                      className="w-full h-8 px-3 border-success text-success hover:bg-success hover:text-success-foreground"
                       onClick={() => handleApprove(booking.id)}
                     >
                       <Check className="w-4 h-4 mr-1" />
@@ -182,7 +207,7 @@ export function AdminBookingTable({ filter }: AdminBookingTableProps) {
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-8 px-3 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                      className="w-full h-8 px-3 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
                       onClick={() => handleReject(booking.id)}
                     >
                       <X className="w-4 h-4 mr-1" />
